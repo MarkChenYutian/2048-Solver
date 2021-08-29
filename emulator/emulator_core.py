@@ -7,6 +7,10 @@ import random
 from typing import List, Tuple
 
 def move(gameState: List[List], direction: str) -> Tuple[List[List], bool]:
+    """
+    Move gamestate towards specific direction
+    Return True as second value if it is a valid move, False otherwise
+    """
     gameState, isValid = pure_move(gameState, direction)
     if isValid:
         return random_tile_generate(gameState), True
@@ -14,6 +18,9 @@ def move(gameState: List[List], direction: str) -> Tuple[List[List], bool]:
         return gameState, False
 
 def pure_move(gameState: List[List], direction: str) -> Tuple[List[List], bool]:
+    """
+    Only move the state, not adding random tiles (Do not call this function, call move() instead.)
+    """
     gameState, change_1 = compress(gameState, direction)
     gameState, change_2 = merge(gameState, direction)
     gameState, change_3 = compress(gameState, direction)
