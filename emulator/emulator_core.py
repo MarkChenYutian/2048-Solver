@@ -27,7 +27,7 @@ def pure_move(gameState: List[List], direction: str) -> Tuple[List[List], bool]:
     return gameState, (change_1 or change_2 or change_3)
 
 def compress(gameState: List[List], direction: str) -> Tuple[List[List], bool]:
-    assert direction in {"up", "down", "left", "right"}, "Expect direction to be 'left', 'right', 'up' or 'down'"
+    assert direction in {"up", "down", "left", "right"}, "Expect direction to be 'left', 'right', 'up' or 'down', get: {}".format(direction)
     newState = [[0] * len(gameState[0]) for _ in range(len(gameState))]
     isChanged = False
     i_initial, i_delta = {
@@ -96,14 +96,4 @@ def random_tile_generate(gameState) -> List[List]:
         value = random.randint(1, 2) * 2
         gameState[x][y] = value
     return gameState
-    
 
-if __name__ == "__main__":
-    gameState = [
-        [0, 0, 0, 0],
-        [0, 0, 2, 0],
-        [0, 0, 0, 4],
-        [0, 0, 2, 4]
-    ]
-    newState, isChanged = move(gameState, "down")
-    for row in newState: print(row)
