@@ -1,5 +1,5 @@
 from emulator.emulator_core import pure_move
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 def get_valid_actions(gameState: List[List]) -> Dict[str, List[List]]:
     """
@@ -24,6 +24,13 @@ def get_valid_actions(gameState: List[List]) -> Dict[str, List[List]]:
         nextState, isValid = pure_move(gameState, action)
         if isValid: nextStates[action] = nextState
     return nextStates
+
+def get_empty_tile(gameState) -> List[Tuple[int, int]]:
+    emptySpace = []
+    for row in range(len(gameState)):
+        for col in range(len(gameState[0])):
+            if gameState[row][col] == 0: emptySpace.append((row, col))
+    return emptySpace
 
 if __name__ == "__main__":
     print("import Ok.")

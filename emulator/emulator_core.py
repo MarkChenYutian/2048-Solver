@@ -80,20 +80,10 @@ def merge(gameState:List[List], direction: str) -> Tuple[List[List], bool]:
             if gameState[row][col] != 0: newState[row][col] = gameState[row][col]
     return newState, isChanged
 
-def get_empty_tile(gameState) -> List[Tuple[int, int]]:
-    emptySpace = []
-    for row in range(len(gameState)):
-        for col in range(len(gameState[0])):
-            if gameState[row][col] == 0: emptySpace.append((row, col))
-    return emptySpace
-
 def random_tile_generate(gameState) -> List[List]:
-    emptySpace = get_empty_tile(gameState)
-    random.shuffle(emptySpace)
-    num_tile = min(random.randint(1, 3), len(emptySpace))
-    for i in range(num_tile):
-        x, y = emptySpace[i]
-        value = random.randint(1, 2) * 2
-        gameState[x][y] = value
+    row, col = random.randint(0, len(gameState)), random.randint(0, len(gameState[0]))
+    while gameState[row][col] != 0:
+        row, col = random.randint(0, len(gameState)), random.randint(0, len(gameState[0]))
+    gameState[row][col] = random.randint(1, 2) * 2
     return gameState
 
