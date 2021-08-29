@@ -3,7 +3,7 @@ from typing import Dict, List
 
 def get_valid_actions(gameState: List[List]) -> Dict[str, List[List]]:
     """
-    Return a list of tuple in structure (direction, newGameState)
+    Return a dictionary in structure { direction: gameState }
     NOTICE: The newGameState is the result of move and has no random tile generated.
 
     Example:
