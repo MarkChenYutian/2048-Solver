@@ -81,9 +81,9 @@ def merge(gameState:List[List], direction: str) -> Tuple[List[List], bool]:
     return newState, isChanged
 
 def random_tile_generate(gameState) -> List[List]:
-    row, col = random.randint(0, len(gameState)), random.randint(0, len(gameState[0]))
+    row, col = random.randint(0, len(gameState) - 1), random.randint(0, len(gameState[0]) - 1)
     while gameState[row][col] != 0:
-        row, col = random.randint(0, len(gameState)), random.randint(0, len(gameState[0]))
+        row, col = random.randint(0, len(gameState) - 1), random.randint(0, len(gameState[0]) - 1)
     gameState[row][col] = random.randint(1, 2) * 2
     return gameState
 

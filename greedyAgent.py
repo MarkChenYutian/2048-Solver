@@ -1,8 +1,8 @@
 import os
 import time
 from typing import Optional, List
-from emulator.emulator_core import move, get_empty_tile, random_tile_generate
-from emulator.emulator_api import get_valid_actions
+from emulator.emulator_core import move, random_tile_generate
+from emulator.emulator_api import get_valid_actions, get_empty_tile
 from emulator.terminal_interface import render_board
 
 
