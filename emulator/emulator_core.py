@@ -80,10 +80,38 @@ def merge(gameState:List[List], direction: str) -> Tuple[List[List], bool]:
             if gameState[row][col] != 0: newState[row][col] = gameState[row][col]
     return newState, isChanged
 
-def random_tile_generate(gameState) -> List[List]:
-    row, col = random.randint(0, len(gameState) - 1), random.randint(0, len(gameState[0]) - 1)
-    while gameState[row][col] != 0:
-        row, col = random.randint(0, len(gameState) - 1), random.randint(0, len(gameState[0]) - 1)
-    gameState[row][col] = random.randint(1, 2) * 2
-    return gameState
+def check_state(gameState: List[List]) -> bool:
+    '''
+    Check the state of the game.
+    If a further move is possible, return True. Otherwise, False.
+    '''
+    # Specify dimension
+    r, c = len(gameState), len(gameState[0])
+    # Check empty space
+    if any(0 in row for row in gameState):
+        return True
+    # Check possible merge cases (main region)
+    for i in range(r - 1):
+        for j in range(c - 1):
+            if (gameState[i][j] == gameState[i + 1][j]) or (gameState[i][j] == gameState[i][j + 1]):
+                return True
+    # Check possible merge cases (last row)
+    for j in range(c - 1):
+        if gameState[r - 1][j] == gameState[r - 1][j + 1]:
+            return True
+    # Check possible merge cases (last column)
+    for i in range(r - 1):
+        if gameState[i][c - 1] == gameState[i + 1][c - 1]:
+            return True
 
+    return False
+
+def random_tile_generate(gameState: List[List]) -> List[List]:
+    if any(0 in row for row in gameState):
+        row, col = random.randint(0, len(gameState) - 1), random.randint(0, len(gameState[0]) - 1)
+        while gameState[row][col] != 0:
+            row, col = random.randint(0, len(gameState) - 1), random.randint(0, len(gameState[0]) - 1)
+        gameState[row][col] = random.randint(1, 2) * 2
+        return gameState
+    else:
+        return gameState
