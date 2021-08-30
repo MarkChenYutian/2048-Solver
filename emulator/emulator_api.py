@@ -32,5 +32,30 @@ def get_empty_tile(gameState) -> List[Tuple[int, int]]:
             if gameState[row][col] == 0: emptySpace.append((row, col))
     return emptySpace
 
+def check_state(gameState: List[List]) -> bool:
+    '''
+    Check the state of the game.
+    If a further move is possible, return True. Otherwise, False.
+    '''
+    # Specify dimension
+    r, c = len(gameState), len(gameState[0])
+    # Check empty space
+    if any(0 in row for row in gameState):
+        return True
+    # Check possible merge cases (main region)
+    for i in range(r - 1):
+        for j in range(c - 1):
+            if (gameState[i][j] == gameState[i + 1][j]) or (gameState[i][j] == gameState[i][j + 1]):
+                return True
+    # Check possible merge cases (last row)
+    for j in range(c - 1):
+        if gameState[r - 1][j] == gameState[r - 1][j + 1]:
+            return True
+    # Check possible merge cases (last column)
+    for i in range(r - 1):
+        if gameState[i][c - 1] == gameState[i + 1][c - 1]:
+            return True
+    return False
+
 if __name__ == "__main__":
     print("import Ok.")

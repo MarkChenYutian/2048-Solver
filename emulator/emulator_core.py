@@ -29,34 +29,36 @@ def pure_move(gameState: List[List], direction: str) -> Tuple[List[List], bool]:
 def compress(gameState: List[List], direction: str) -> Tuple[List[List], bool]:
     assert direction in {"up", "down", "left", "right"}, "Expect direction to be 'left', 'right', 'up' or 'down', get: {}".format(direction)
     newState = [[0] * len(gameState[0]) for _ in range(len(gameState))]
-    isChanged = False
-    i_initial, i_delta = {
-            "up": (0, 1),
-            "down": (len(gameState) - 1, -1),
-            "left": (0, 1),
-            "right": (len(gameState[0]) - 1, -1)
-        }[direction]
-    if direction in ["up", "down"]:   
-        for x in range(len(gameState[0])):
-            i = i_initial
-            for y in range(len(gameState)):
-                if gameState[y][x] != 0:
-                    newState[i][x] = gameState[y][x]
-                    i += i_delta
-                    isChanged = True
-    elif direction in ["left", "right"]:
-        for x in range(len(gameState)):
-            i = i_initial
-            for y in range(len(gameState[0])):
-                if gameState[x][y] != 0:
-                    newState[x][i] = gameState[x][y]
-                    i += i_delta
-                    isChanged = True
-    return newState, isChanged
+    # Compress action
+    if direction == "up":
+        for col in range(0, len(gameState[0]), 1):
+            fullCol = [gameState[_][col] for _ in range(0, len(gameState), 1) if gameState[_][col] != 0]
+            for idx, item in enumerate(fullCol): newState[idx][col] = item
+    elif direction == "down":
+        for col in range(0, len(gameState[0]), 1):
+            fullCol = [gameState[_][col] for _ in range(len(gameState) - 1, -1, -1) if gameState[_][col] != 0]
+            for idx, item in enumerate(fullCol): newState[len(gameState) - 1 - idx][col] = item
+    elif direction == "left":
+        for row in range(0, len(gameState), 1):
+            fullRow = [gameState[row][_] for _ in range(0, len(gameState[0]), 1) if gameState[row][_] != 0]
+            for idx, item in enumerate(fullRow): newState[row][idx] = item
+    else:
+        for row in range(0, len(gameState), 1):
+            fullRow = [gameState[row][_] for _ in range(len(gameState[0]) - 1, -1, -1) if gameState[row][_] != 0]
+            for idx, item in enumerate(fullRow): newState[row][len(gameState[0]) - 1 - idx] = item
+    # is updated
+    isValid = False
+    for row in range(len(gameState)):
+        for col in range(len(gameState[0])):
+            isValid = isValid or gameState[row][col] != newState[row][col]
+    
+    return newState, isValid
+
+
 
 
 def merge(gameState:List[List], direction: str) -> Tuple[List[List], bool]:
-    assert direction in {"up", "down", "left", "right"}, "Expect direction to be 'left', 'right', 'up' or 'down'"
+    assert direction in {"up", "down", "left", "right"}, "Expect direction to be 'left', 'right', 'up' or 'down', get: {}".format(direction)
     dx, dy = {
         "up": (1, 0),
         "down": (-1, 0),
@@ -70,7 +72,7 @@ def merge(gameState:List[List], direction: str) -> Tuple[List[List], bool]:
         for col in range(len(gameState[0])):
             if not(-1 < row + dx < len(gameState) and -1 < col + dy < len(gameState[0])):
                 continue
-            elif gameState[row + dx][col + dy] == gameState[row][col]:
+            elif gameState[row + dx][col + dy] == gameState[row][col] and gameState[row][col] != 0:
                 newState[row + dx][col + dy] = gameState[row][col] * 2
                 gameState[row][col] = 0
                 gameState[row + dx][col + dy] = 0
@@ -79,32 +81,6 @@ def merge(gameState:List[List], direction: str) -> Tuple[List[List], bool]:
         for col in range(len(gameState[0])):
             if gameState[row][col] != 0: newState[row][col] = gameState[row][col]
     return newState, isChanged
-
-def check_state(gameState: List[List]) -> bool:
-    '''
-    Check the state of the game.
-    If a further move is possible, return True. Otherwise, False.
-    '''
-    # Specify dimension
-    r, c = len(gameState), len(gameState[0])
-    # Check empty space
-    if any(0 in row for row in gameState):
-        return True
-    # Check possible merge cases (main region)
-    for i in range(r - 1):
-        for j in range(c - 1):
-            if (gameState[i][j] == gameState[i + 1][j]) or (gameState[i][j] == gameState[i][j + 1]):
-                return True
-    # Check possible merge cases (last row)
-    for j in range(c - 1):
-        if gameState[r - 1][j] == gameState[r - 1][j + 1]:
-            return True
-    # Check possible merge cases (last column)
-    for i in range(r - 1):
-        if gameState[i][c - 1] == gameState[i + 1][c - 1]:
-            return True
-
-    return False
 
 def random_tile_generate(gameState: List[List]) -> List[List]:
     if any(0 in row for row in gameState):
@@ -115,3 +91,4 @@ def random_tile_generate(gameState: List[List]) -> List[List]:
         return gameState
     else:
         return gameState
+

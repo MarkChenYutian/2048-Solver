@@ -1,5 +1,6 @@
 import unittest
-from emulator_core import check_state, random_tile_generate, pure_move
+from emulator.emulator_core import random_tile_generate, pure_move
+from emulator.emulator_api import check_state
 
 
 class EmulatorTest(unittest.TestCase):
@@ -69,19 +70,19 @@ class EmulatorTest(unittest.TestCase):
                    ], True
         self.assertEqual(actual, expected)
 
-        # actual = pure_move(
-        #     [[0, 2, 8, 2],
-        #      [2, 4, 2, 4],
-        #      [0, 0, 0, 2],
-        #      [2, 4, 8, 2]], "right"
-        # )
-        # expected = [
-        #                [0, 2, 8, 2],
-        #                [2, 4, 2, 4],
-        #                [0, 0, 0, 2],
-        #                [2, 4, 8, 2]
-        #            ], False
-        # self.assertEqual(actual, expected)
+        actual = pure_move(
+             [[0, 2, 8, 2],
+             [2, 4, 2, 4],
+             [0, 0, 0, 2],
+             [2, 4, 8, 2]], "right"
+        )
+        expected = [
+                       [0, 2, 8, 2],
+                       [2, 4, 2, 4],
+                       [0, 0, 0, 2],
+                       [2, 4, 8, 2]
+                   ], False
+        self.assertEqual(actual, expected)
 
         actual = pure_move([[0, 2, 4, 2],
                             [0, 0, 2, 2],
