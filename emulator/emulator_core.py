@@ -55,8 +55,6 @@ def compress(gameState: List[List], direction: str) -> Tuple[List[List], bool]:
     return newState, isValid
 
 
-
-
 def merge(gameState:List[List], direction: str) -> Tuple[List[List], bool]:
     assert direction in {"up", "down", "left", "right"}, "Expect direction to be 'left', 'right', 'up' or 'down', get: {}".format(direction)
     dx, dy = {
@@ -92,3 +90,6 @@ def random_tile_generate(gameState: List[List]) -> List[List]:
     else:
         return gameState
 
+class GameOverException(Exception):
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)

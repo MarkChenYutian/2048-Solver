@@ -26,6 +26,9 @@ def get_valid_actions(gameState: List[List]) -> Dict[str, List[List]]:
     return nextStates
 
 def get_empty_tile(gameState) -> List[Tuple[int, int]]:
+    """
+    Get the empty tiles in gameState, return a list of (row, col) of empty tiles
+    """
     emptySpace = []
     for row in range(len(gameState)):
         for col in range(len(gameState[0])):
@@ -57,5 +60,13 @@ def check_state(gameState: List[List]) -> bool:
             return True
     return False
 
-if __name__ == "__main__":
-    print("import Ok.")
+def get_max_tile(gameState:List[List]) -> Tuple[int, Tuple[int, int]]:
+    """
+    Given a game state, return the value and position of max tile.
+    """
+    row, col, value = -1, -1, -1
+    for r in gameState:
+        for c, item in enumerate(r):
+            if item > value:
+                value, row, col = item, r, c
+    return (value, (row, col))
