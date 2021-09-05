@@ -28,8 +28,8 @@ class treeEvaluateAgent:
             evaluate,
             average,
             useMultiProcess=True,
-            # depth = max(3, 6 - len(get_empty_tile(self.state))),
-            depth = 6,
+            depth = max(4, 7 - len(get_empty_tile(self.state))),
+            #depth = 6,
             random=(True, 3)
         )
         action, maxScore = "left", -1000
