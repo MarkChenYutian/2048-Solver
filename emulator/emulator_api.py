@@ -1,3 +1,6 @@
+"""
+This file describe the FEATURE EXTRACT FUNCTION(s), not the emulator itself.
+"""
 from emulator.emulator_core import pure_move, random_tile_generate
 from typing import Dict, List, Tuple
 from copy import deepcopy
@@ -116,3 +119,15 @@ def tree_evaluation(
                 gameOverScore=gameOverScore).values()) for ns in possibleStates])
     return scores
         
+def get_new_max(gameState_0: List[List], gameState_1: List[List]) -> int:
+    """
+    Given to gameStates, return the newly-generated maximum number
+    """
+    max_num = 0
+    for row in range(len(gameState_0)):
+        for col in range(len(gameState_0[0])):
+            if gameState_0[row][col] != gameState_1[row][col] \
+                and gameState_1[row][col] > max_num\
+                and gameState_0[row][col] != 0:
+                max_num = gameState_1[row][col]
+    return max_num

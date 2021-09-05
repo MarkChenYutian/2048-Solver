@@ -3,9 +3,10 @@ import time
 import uuid
 import json
 import random
+import multiprocessing as mp
 from typing import Optional, List, Dict
 from emulator.emulator_core import move, random_tile_generate, GameOverException
-from emulator.emulator_api import get_valid_actions, get_empty_tile, get_max_tile, check_state
+from emulator.emulator_api import get_valid_actions, get_empty_tile, get_new_max, check_state, get_max_tile
 from emulator.terminal_interface import render_board
 
 
@@ -25,6 +26,7 @@ class GeneticAlgorithmAgent:
         ########## INITIALIZE HERE ############
         self.id = str(uuid.uuid4())
         self.from_id = fromAgent
+        self.score = 0
         self.parameter = {
             "empty_tile_weight": random.random(),   # The weight on empty tile number
             "max_tile_weight": random.random(),     # The weight on maximum tile in resulted case
@@ -47,12 +49,13 @@ class GeneticAlgorithmAgent:
         # Evaluate each action
         for action in validActions:
             nextState = validActions[action]
+            # get_new_max(self.state, nextState) * self.parameter["max_tile_weight"] + \
             actionScore[action] = len(get_empty_tile(nextState)) * self.parameter["empty_tile_weight"] + \
-                                  get_max_tile(nextState)[0] * self.parameter["max_tile_weight"] + \
-                                  self.parameter[action + "_preference"]
+                                    get_max_tile(nextState)[0] * self.parameter["max_tile_weight"] + \
+                                    self.parameter[action + "_preference"]
 
         # Select action based on evaluation
-        max_score, pendingAction = -1 * float("inf"), ""
+        max_score, pendingAction = -1000, ""
         for action in actionScore:
             if actionScore[action] > max_score:
                 max_score = actionScore[action]
@@ -87,12 +90,12 @@ class GeneticAlgorithmAgent:
         Mutate the parameter of agent to add diversity
         """
         return GeneticAlgorithmAgent([self.id], paramDict={
-            "empty_tile_weight" : self.parameter["empty_tile_weight"] + random.random() * random.choice([0.25, -0.25]),
-            "max_tile_weight"   : self.parameter["max_tile_weight"] + random.random() * random.choice([0.25, -0.25]),
-            "up_preference"     : self.parameter["up_preference"] + random.random() * random.choice([0.25, -0.25]),
-            "down_preference"   : self.parameter["down_preference"] + random.random() * random.choice([0.25, -0.25]),
-            "left_preference"   : self.parameter["left_preference"] + random.random() * random.choice([0.25, -0.25]),
-            "right_preference"  : self.parameter["right_preference"] + random.random() * random.choice([0.25, -0.25]),
+            "empty_tile_weight" : self.parameter["empty_tile_weight"] + random.random() * random.choice([0.1, -0.1]),
+            "max_tile_weight"   : self.parameter["max_tile_weight"] + random.random() * random.choice([0.1, -0.1]),
+            "up_preference"     : self.parameter["up_preference"] + random.random() * random.choice([0.1, -0.1]),
+            "down_preference"   : self.parameter["down_preference"] + random.random() * random.choice([0.1, -0.1]),
+            "left_preference"   : self.parameter["left_preference"] + random.random() * random.choice([0.1, -0.1]),
+            "right_preference"  : self.parameter["right_preference"] + random.random() * random.choice([0.1, -0.1]),
         })
 
     def clearState(self) -> None:
@@ -100,6 +103,7 @@ class GeneticAlgorithmAgent:
         Reset the agent state to initial state (randomized)
         """
         self.state = random_tile_generate([[0] * 4 for _ in range(4)])
+        self.stepCount = 0
 
     def dump(self, fileName, score) -> None:
         with open("./storage/GeneticAlgorithm/{}.json".format(self.id if fileName is None else fileName), "w") as f:
@@ -111,7 +115,7 @@ class GeneticAlgorithmAgent:
                 "score": score
             }, f, indent=4)
 
-    def evaluate(self, numTest=8) -> int:
+    def evaluate(self, numTest=100) -> int:
         """
         Return the average step in numTest (default 10) tests
         """
@@ -129,21 +133,28 @@ class GeneticAlgorithmAgent:
                     break
         return sum(scores) / len(scores)
 
+def wrapper(obj): return obj.evaluate()
 
 class GeneticAlgorithmTrainer:
     def __init__(self, firstRoundNum=14):
         self.round = 0
         self.world = [[0, GeneticAlgorithmAgent([''])] for _ in range(firstRoundNum)]
+        self.max_sequence = []
 
     def assessmentGeneration(self):
         print("正在高速内卷中 ^_^", end="", flush=True)
+        
+        with mp.Pool(len(self.world)) as p:
+            scores = p.map(func=wrapper, iterable=[self.world[_][1] for _ in range(len(self.world))])
+
         for i in range(len(self.world)):
-            self.world[i][0] = self.world[i][1].evaluate()
+            self.world[i][0]  = scores[i]
         print("\r内卷完毕，本轮结果：")
         print([item[0] for item in self.world],
               "Avg: {}".format(sum([item[0] for item in self.world]) / len(self.world)),
               "Max: {}".format(max([item[0] for item in self.world]))
               )
+        self.max_sequence.append(max([item[0] for item in self.world]))
 
     def createNextGeneration(self):
         nextGen = []
@@ -168,7 +179,9 @@ class GeneticAlgorithmTrainer:
 
 if __name__ == "__main__":
     print("Working on directory: ", os.getcwd())
-    trainer = GeneticAlgorithmTrainer()
-    while True:
+    trainer = GeneticAlgorithmTrainer(firstRoundNum=12)
+    for _ in range(500):
         trainer.assessmentGeneration()
         trainer.createNextGeneration()
+    with open("./max_seq.json", "w") as f:
+        json.dump(trainer.max_sequence, f)

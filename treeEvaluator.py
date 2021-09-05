@@ -1,5 +1,4 @@
 import os
-from temp import evaluate
 import time
 from typing import Optional, List
 from emulator.emulator_core import GameOverException, move, random_tile_generate
