@@ -27,9 +27,10 @@ class treeEvaluateAgent:
         scores = tree_evaluation(self.state,
             evaluate,
             average,
+            useMultiProcess=True,
             # depth = max(3, 6 - len(get_empty_tile(self.state))),
-            depth = 4,
-            random=(False, 0)
+            depth = 6,
+            random=(True, 3)
         )
         action, maxScore = "left", -1000
         for a in scores:
