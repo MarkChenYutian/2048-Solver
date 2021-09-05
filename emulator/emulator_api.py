@@ -1,5 +1,6 @@
-from emulator.emulator_core import pure_move
+from emulator.emulator_core import pure_move, random_tile_generate
 from typing import Dict, List, Tuple
+from copy import deepcopy
 
 def get_valid_actions(gameState: List[List]) -> Dict[str, List[List]]:
     """
@@ -70,3 +71,48 @@ def get_max_tile(gameState:List[List]) -> Tuple[int, Tuple[int, int]]:
             if item > value:
                 value, row, col = item, r, c
     return (value, (row, col))
+
+def tree_evaluation(
+        state: List[List],
+        evaluate_fn,
+        comb_fn,
+        depth,
+        random = (False, 0),
+        gameOverScore = 0):
+    """
+    :param state: Current State you want to evaluate each action on
+    :param evaluate_fn: The function to evaluate each state
+    :param comb_fn: The function to combine all possible states after each action (usally average / min / max)
+    :param depth: The depth of tree_evaluate
+    :param random: A tuple, if the 0th item is True, then 1st item represent the number of random_tile generation applied
+    on the current state to evaluate.
+    :param gameOverScore: the score to return when a game is at terminal state
+    """
+    scores = {a: 0 for a in ["up", "left", "down", "right"]}
+    if not check_state(state): return scores
+    validActions = get_valid_actions(state)
+    for action in validActions:
+        if random[0]:
+            possibleStates = [random_tile_generate(validActions[action]) for _ in range(random[1])]
+        else:
+            empty_space = get_empty_tile(state)
+            possibleStates = []
+            for x, y in empty_space:
+                next_state = deepcopy(validActions[action])
+                next_state[x][y] = 2
+                possibleStates.append(next_state)
+            for x, y in empty_space:
+                next_state = deepcopy(validActions[action])
+                next_state[x][y] = 4
+                possibleStates.append(next_state)
+        if depth == 1:
+            scores[action] = comb_fn([evaluate_fn(ns) + 0.5 for ns in possibleStates])
+        else:
+            scores[action] = comb_fn([max(tree_evaluation(ns, 
+                evaluate_fn, 
+                comb_fn, 
+                depth - 1, 
+                random=random, 
+                gameOverScore=gameOverScore).values()) for ns in possibleStates])
+    return scores
+        
