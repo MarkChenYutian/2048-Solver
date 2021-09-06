@@ -27,6 +27,14 @@ class AgentNameHere:
         print("STEP {}".format(self.stepCount))
         print("Process time: {}s".format(endTime - startTime))
         render_board(self.state)
+    
+    def clearState(self) -> None:
+        """
+        Reset the agent state to initial state (randomized)
+        """
+        self.state = random_tile_generate([[0] * 4 for _ in range(4)])
+        self.stepCount = 0
+
 
 if __name__ == "__main__":
     print("Working on directory: ", os.getcwd())

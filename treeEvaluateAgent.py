@@ -8,7 +8,7 @@ from emulator.terminal_interface import render_board
 def evaluate(state): return len(get_empty_tile(state))
 def average(iterator): return sum(iterator) / len(iterator)
 
-class treeEvaluateAgent:
+class TreeEvaluateAgent:
     """
     Describe your Agent
     """
@@ -30,7 +30,7 @@ class treeEvaluateAgent:
             useMultiProcess=True,
             depth = max(4, 7 - len(get_empty_tile(self.state))),
             #depth = 6,
-            random=(True, 3)
+            sampling=(True, 3)
         )
         action, maxScore = "left", -1000
         for a in scores:
@@ -44,9 +44,13 @@ class treeEvaluateAgent:
         print("STEP {}".format(self.stepCount))
         print("Process time: {}s".format(endTime - startTime))
         render_board(self.state)
+    
+    def clearState(self):
+        self.state = random_tile_generate([[0] * 4 for _ in range(4)])
+        self.stepCount = 0
 
 if __name__ == "__main__":
     print("Working on directory: ", os.getcwd())
-    testAgent = treeEvaluateAgent()
+    testAgent = TreeEvaluateAgent()
     while True:
         testAgent.make_move()

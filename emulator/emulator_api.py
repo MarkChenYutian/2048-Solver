@@ -80,10 +80,10 @@ def tree_evaluation(
         state: List[List],
         evaluate_fn,
         comb_fn,
-        depth,
-        random = (False, 0),
-        useMultiProcess = False,
-        gameOverScore = 0):
+        depth: int,
+        sampling: Tuple[bool, int] = (False, 0),
+        useMultiProcess: bool = False,
+        gameOverScore: float = 0):
     """
     :param state: Current State you want to evaluate each action on
     :param evaluate_fn: The function to evaluate each state
@@ -100,13 +100,13 @@ def tree_evaluation(
         actionList = list(validActions.keys())
         with mp.Pool(len(actionList)) as p:
             score_list = p.map(func=tree_evaluation_subProcess,
-                iterable=[(state, validActions[a], evaluate_fn, comb_fn, depth - 1, random, gameOverScore) for a in actionList])
+                iterable=[(state, validActions[a], evaluate_fn, comb_fn, depth - 1, sampling, gameOverScore) for a in actionList])
             for i, action in enumerate(actionList):
                 scores[action] = score_list[i]
     else:
         for action in validActions:
-            if random[0]:
-                possibleStates = [random_tile_generate(validActions[action]) for _ in range(random[1])]
+            if sampling[0]:
+                possibleStates = [random_tile_generate(validActions[action]) for _ in range(sampling[1])]
             else:
                 empty_space = get_empty_tile(state)
                 possibleStates = []
@@ -125,14 +125,14 @@ def tree_evaluation(
                     evaluate_fn, 
                     comb_fn, 
                     depth - 1, 
-                    random=random, 
+                    sampling=sampling, 
                     gameOverScore=gameOverScore).values()) for ns in possibleStates])
     return scores
 
 def tree_evaluation_subProcess(args):
-    state, ns, evaluate_fn, comb_fn, depth, random, gameOverScore = args
-    if random[0]:
-        possibleStates = [random_tile_generate(ns) for _ in range(random[1])]
+    state, ns, evaluate_fn, comb_fn, depth, sampling, gameOverScore = args
+    if sampling[0]:
+        possibleStates = [random_tile_generate(ns) for _ in range(sampling[1])]
     else:
         empty_space = get_empty_tile(state)
         possibleStates = []
@@ -151,7 +151,7 @@ def tree_evaluation_subProcess(args):
             evaluate_fn, 
             comb_fn, 
             depth - 1, 
-            random=random, 
+            sampling=sampling, 
             gameOverScore=gameOverScore).values()) for ns in possibleStates])
         
 def get_new_max(gameState_0: List[List], gameState_1: List[List]) -> int:
