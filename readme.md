@@ -1,4 +1,4 @@
-<img src="http://markdown-img-1304853431.cosgz.myqcloud.com/20210905104616.jpg" alt="8ac4643ca12c16394e1cc8ef1fa4504" style="zoom:50%;" />
+<img src="http://markdown-img-1304853431.cosgz.myqcloud.com/20210905104616.jpg" alt="8ac4643ca12c16394e1cc8ef1fa4504" style="width: 25%;" />
 
 
 
