@@ -1,5 +1,6 @@
 import os
 import time
+import math
 from typing import Optional, List
 from emulator.emulator_core import GameOverException, move, random_tile_generate
 from emulator.emulator_api import check_state, tree_evaluation, get_empty_tile
@@ -29,7 +30,6 @@ class TreeEvaluateAgent:
             average,
             useMultiProcess=True,
             depth = max(4, 7 - len(get_empty_tile(self.state))),
-            #depth = 6,
             sampling=(True, 3)
         )
         action, maxScore = "left", -1000
@@ -41,9 +41,10 @@ class TreeEvaluateAgent:
         #######################################
         endTime = time.time()
         self.stepCount += 1
-        print("STEP {}".format(self.stepCount))
-        print("Process time: {}s".format(endTime - startTime))
-        render_board(self.state)
+        if withGUI:
+            print("STEP {}".format(self.stepCount))
+            print("Process time: {}s".format(endTime - startTime))
+            render_board(self.state)
     
     def clearState(self):
         self.state = random_tile_generate([[0] * 4 for _ in range(4)])
