@@ -14,8 +14,11 @@ Below data: Let each agent play 2,000 games and calculate the summary statistics
 
 |                         | Std.     | Med  | Mean    | Max  | Min  |
 | ----------------------- | -------- | ---- | ------- | ---- | ---- |
-| Greedy Agent            | 128.4185 | 256  | 227.232 | 1024 | 32   |
-| Genetic Algorithm Agent | 132.7719 | 256  | 232.176 | 1024 | 32   |
+| Greedy Agent            | 213.3275 | 548  | 565.987 | 1670 | 130  |
+| Genetic Algorithm Agent | 222.4283 | 538  | 564.619 | 1730 | 142  |
+| Tree Evaluate Agent\*   | 263.318  | 778  | 767.419 | 1726 | 180  |
+
+\* Under sampling setting of `(True, 3)` and depth setting of `max(4, 7 - len(get_empty_tile(self.state)))`
 
 # Agents Deployed
 
