@@ -85,7 +85,7 @@ def random_tile_generate(gameState: List[List]) -> List[List]:
         row, col = random.randint(0, len(gameState) - 1), random.randint(0, len(gameState[0]) - 1)
         while gameState[row][col] != 0:
             row, col = random.randint(0, len(gameState) - 1), random.randint(0, len(gameState[0]) - 1)
-        gameState[row][col] = random.random.choice([2, 2, 2, 2, 2, 2, 2, 2, 2, 4])
+        gameState[row][col] = 2 if random.random() < 0.9 else 4
         return gameState
     else:
         return gameState
