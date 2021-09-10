@@ -1,16 +1,17 @@
-import os
-import time
 import uuid
 import json
 import random
 import multiprocessing as mp
+
 from typing import Optional, List, Dict
+
 from emulator.emulator_core import move, random_tile_generate, GameOverException
 from emulator.emulator_api import get_valid_actions, get_empty_tile, get_new_max, check_state, get_max_tile
 from emulator.terminal_interface import render_board
+from emulator.agent import Agent
 
 
-class GeneticAlgorithmAgent:
+class GeneticAlgorithmAgent(Agent):
     """
     Genetic Algorithm Agent use GA to optimize its operation.
     """
@@ -19,10 +20,7 @@ class GeneticAlgorithmAgent:
                  fromAgent: List[str],
                  paramDict: Optional[Dict] = None,
                  initialState: Optional[List[List]] = None) -> None:
-
-        self.state = initialState if initialState is not None else \
-            random_tile_generate([[0] * 4 for _ in range(4)])
-        self.stepCount = 0
+        super().__init__(initialState=initialState)
         ########## INITIALIZE HERE ############
         self.id = str(uuid.uuid4())
         self.from_id = fromAgent
@@ -37,10 +35,7 @@ class GeneticAlgorithmAgent:
             "right_preference": random.random()
         } if paramDict is None else paramDict
         #######################################
-
-    def make_move(self, withGUI=True):
-        startTime = time.time()
-        ########### WRITE CODE BELOW ##########
+    def make_decision(self) -> str:
         actionScore = {key: 0 for key in ["up", "down", "left", "right"]}
         validActions = get_valid_actions(self.state)
 
@@ -63,14 +58,7 @@ class GeneticAlgorithmAgent:
 
         if len(validActions) == 0 or pendingAction == "" : raise GameOverException()
 
-        self.state, isValid = move(self.state, pendingAction)
-        #######################################
-        endTime = time.time()
-        self.stepCount += 1
-        if withGUI:
-            print("STEP {}".format(self.stepCount))
-            print("Process time: {}s".format(endTime - startTime))
-            render_board(self.state)
+        return pendingAction
 
     def hybrid(self, o: 'GeneticAlgorithmAgent') -> List['GeneticAlgorithmAgent']:
         """
@@ -97,13 +85,6 @@ class GeneticAlgorithmAgent:
             "left_preference"   : self.parameter["left_preference"] + random.random() * random.choice([0.1, -0.1]),
             "right_preference"  : self.parameter["right_preference"] + random.random() * random.choice([0.1, -0.1]),
         })
-
-    def clearState(self) -> None:
-        """
-        Reset the agent state to initial state (randomized)
-        """
-        self.state = random_tile_generate([[0] * 4 for _ in range(4)])
-        self.stepCount = 0
 
     def dump(self, fileName, score) -> None:
         with open("./storage/GeneticAlgorithm/{}.json".format(self.id if fileName is None else fileName), "w") as f:
@@ -175,13 +156,3 @@ class GeneticAlgorithmTrainer:
         ]
         self.world = [[0, agent] for agent in nextGen]
         self.round += 1
-
-
-if __name__ == "__main__":
-    print("Working on directory: ", os.getcwd())
-    trainer = GeneticAlgorithmTrainer(firstRoundNum=12)
-    for _ in range(500):
-        trainer.assessmentGeneration()
-        trainer.createNextGeneration()
-    with open("./max_seq.json", "w") as f:
-        json.dump(trainer.max_sequence, f)

@@ -25,19 +25,21 @@ if __name__ == "__main__":
 
     # SETUP AREA #################################
     # Set agent you want to test
-    testAgent = agentLib["Tree_Agent"]
+    testAgent = agentLib["GA_Agent"]
     # Start testing from ...
-    START_FROM = 2000
+    START_FROM = 0
     # End testing at ...
-    FINAL_TARGET = 2001
+    FINAL_TARGET = 20
     # If recovery mode is true, the benchmark result will be dumped after each evaluation
     # If the agent run fast, the dumping operation will significant slow benchmark down and 
     # it is advised NOT to open RECOVERY MODE in this situation.
-    RECOVERY_MODE = True
+    RECOVERY_MODE = False
     # Store state data for future research
-    STORE_CASES = True
-    AVG_PATH = "./storage/BenchmarkResult/tree_evaluator_average.json"
-    RAW_PATH = "./storage/BenchmarkResult/tree_evaluator_rawData.json"
+    STORE_CASES = False
+    # AVG_PATH = "./storage/BenchmarkResult/tree_evaluator_average.json"
+    # RAW_PATH = "./storage/BenchmarkResult/tree_evaluator_rawData.json"
+    AVG_PATH = "./1.json"
+    RAW_PATH = "./2.json"
     ##############################################
     states = []
     result = []
@@ -60,7 +62,7 @@ if __name__ == "__main__":
                 case -= 1
                 break
             try:
-                testAgent.make_move(withGUI=True)
+                testAgent.make_move(withGUI=False)
                 states.append(testAgent.state)
             except GameOverException:
                 score = sum([sum(row) for row in testAgent.state])

@@ -1,29 +1,18 @@
-import os
-import time
-import math
 from typing import Optional, List
+
 from emulator.emulator_core import GameOverException, move, random_tile_generate
 from emulator.emulator_api import check_state, tree_evaluation, get_empty_tile
 from emulator.terminal_interface import render_board
+from emulator.agent import Agent
 
 def evaluate(state): return len(get_empty_tile(state))
 def average(iterator): return sum(iterator) / len(iterator)
 
-class TreeEvaluateAgent:
-    """
-    Describe your Agent
-    """
+class TreeEvaluateAgent(Agent):
     def __init__(self, initialState: Optional[List[List]]=None) -> None:
-        self.state = initialState if initialState is not None else \
-            random_tile_generate([[0] * 4 for _ in range(4)])
-        self.stepCount = 0
-        ########## INITIALIZE HERE ############
-
-        #######################################
-
-    def make_move(self, withGUI=True):
-        startTime = time.time()
-        ########### WRITE CODE BELOW ##########
+        super().__init__(initialState=initialState)
+    
+    def make_decision(self) -> str:
         if not check_state(self.state): raise GameOverException()
         scores = tree_evaluation(self.state,
             evaluate,
@@ -37,21 +26,5 @@ class TreeEvaluateAgent:
             if scores[a] > maxScore:
                 action = a
                 maxScore = scores[a]
-        self.state, isValid = move(self.state, action)
-        #######################################
-        endTime = time.time()
-        self.stepCount += 1
-        if withGUI:
-            print("STEP {}".format(self.stepCount))
-            print("Process time: {}s".format(endTime - startTime))
-            render_board(self.state)
-    
-    def clearState(self):
-        self.state = random_tile_generate([[0] * 4 for _ in range(4)])
-        self.stepCount = 0
+        return action
 
-if __name__ == "__main__":
-    print("Working on directory: ", os.getcwd())
-    testAgent = TreeEvaluateAgent()
-    while True:
-        testAgent.make_move()
