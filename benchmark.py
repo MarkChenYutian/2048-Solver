@@ -27,7 +27,7 @@ if __name__ == "__main__":
     # Set agent you want to test
     testAgent = agentLib["Tree_Agent"]
     # Start testing from ...
-    START_FROM = 2000
+    RESUME = True
     # End testing at ...
     FINAL_TARGET = 2001
     # If recovery mode is true, the benchmark result will be dumped after each evaluation
@@ -35,7 +35,8 @@ if __name__ == "__main__":
     # it is advised NOT to open RECOVERY MODE in this situation.
     RECOVERY_MODE = True
     # Store state data for future research
-    STORE_CASES = True
+    STORE_CASES = False
+    WITH_GUI = False
     AVG_PATH = "./storage/BenchmarkResult/tree_evaluator_average.json"
     RAW_PATH = "./storage/BenchmarkResult/tree_evaluator_rawData.json"
     ##############################################
@@ -43,14 +44,18 @@ if __name__ == "__main__":
     result = []
     average = []
     curr_sum = 0
-    if START_FROM != 0 and RECOVERY_MODE:
+    case = 0
+    if RESUME and not RECOVERY_MODE:
+        raise Exception("You can only resume in recovery mode")
+    
+    if RESUME and RECOVERY_MODE:
         with open(RAW_PATH, "r") as f:
             result = json.load(f)
         with open(AVG_PATH, "r") as f:
             average = json.load(f)
         curr_sum = sum(result)
+        case = len(result) + 1
     
-    case = START_FROM
     while case < FINAL_TARGET:
         states = []
         timer_start = time.time()
@@ -60,7 +65,7 @@ if __name__ == "__main__":
                 case -= 1
                 break
             try:
-                testAgent.make_move(withGUI=True)
+                testAgent.make_move(withGUI=WITH_GUI)
                 states.append(testAgent.state)
             except GameOverException:
                 score = sum([sum(row) for row in testAgent.state])
