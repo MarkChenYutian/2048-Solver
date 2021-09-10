@@ -1,4 +1,3 @@
-import os
 import json
 import time
 
@@ -25,15 +24,15 @@ if __name__ == "__main__":
 
     # SETUP AREA #################################
     # Set agent you want to test
-    testAgent = agentLib["GA_Agent"]
+    testAgent = agentLib["Tree_Agent"]
     # Start testing from ...
     RESUME = True
     # End testing at ...
-    FINAL_TARGET = 20
+    FINAL_TARGET = 2001
     # If recovery mode is true, the benchmark result will be dumped after each evaluation
     # If the agent run fast, the dumping operation will significant slow benchmark down and 
     # it is advised NOT to open RECOVERY MODE in this situation.
-    RECOVERY_MODE = False
+    RECOVERY_MODE = True
     # Store state data for future research
     STORE_CASES = False
     WITH_GUI = False

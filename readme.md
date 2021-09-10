@@ -12,11 +12,11 @@ How to evaluate one game: *The sum of all numbers in the state when game is over
 
 Below data: Let each agent play 2,000 games and calculate the summary statistics from all scores.
 
-|                         | Std.     | Med  | Mean    | Max  | Min  |
-| ----------------------- | -------- | ---- | ------- | ---- | ---- |
-| Greedy Agent            | 213.3275 | 548  | 565.987 | 1670 | 130  |
-| Genetic Algorithm Agent | 222.4283 | 538  | 564.619 | 1730 | 142  |
-| Tree Evaluate Agent\*   | 263.318  | 778  | 767.419 | 1726 | 180  |
+|                         | Std.     | Med  | Mean     | Max  | Min  |
+| ----------------------- | -------- | ---- | -------- | ---- | ---- |
+| Greedy Agent            | 193.1929 | 526  | 549.5292 | 1254 | 122  |
+| Genetic Algorithm Agent | 222.4283 | 538  | 564.619  | 1730 | 142  |
+| Tree Evaluate Agent\*   | 337.8625 | 1016 | 1006.532 | 2096 | 212  |
 
 \* Under sampling setting of `(True, 3)` and depth setting of `max(4, 7 - len(get_empty_tile(self.state)))`
 
