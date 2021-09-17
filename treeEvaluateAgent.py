@@ -1,8 +1,7 @@
 from typing import Optional, List
 
-from emulator.emulator_core import GameOverException, move, random_tile_generate
+from emulator.emulator_core import GameOverException
 from emulator.emulator_api import check_state, tree_evaluation, get_empty_tile
-from emulator.terminal_interface import render_board
 from emulator.agent import Agent
 
 def evaluate(state): return len(get_empty_tile(state))

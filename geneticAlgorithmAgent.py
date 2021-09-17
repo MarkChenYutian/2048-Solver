@@ -5,9 +5,8 @@ import multiprocessing as mp
 
 from typing import Optional, List, Dict
 
-from emulator.emulator_core import move, random_tile_generate, GameOverException
-from emulator.emulator_api import get_valid_actions, get_empty_tile, get_new_max, check_state, get_max_tile
-from emulator.terminal_interface import render_board
+from emulator.emulator_core import GameOverException
+from emulator.emulator_api import get_valid_actions, get_empty_tile, check_state, get_max_tile
 from emulator.agent import Agent
 
 
