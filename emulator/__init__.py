@@ -1,1 +1,0 @@
-print("==> 2048 Emulator, version 1.0 <==")
