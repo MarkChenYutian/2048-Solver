@@ -27,3 +27,8 @@ class TreeEvaluateAgent(Agent):
                 maxScore = scores[a]
         return action
 
+if __name__ == "__main__":
+    t = TreeEvaluateAgent()
+    while True:
+        t.make_move(withGUI=True)
+
